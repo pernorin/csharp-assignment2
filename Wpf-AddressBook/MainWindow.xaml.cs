@@ -24,5 +24,14 @@ namespace Wpf_AddressBook
         {
             InitializeComponent();
         }
+
+        private void btn_Add_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void btn_Remove_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
