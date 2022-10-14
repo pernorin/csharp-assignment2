@@ -62,6 +62,8 @@
             Grid.Column="1"
             x:Name="lv_Contacts"
             Margin="12"
+            HorizontalContentAlignment="Stretch"
+            SelectionChanged="lv_Contacts_SelectionChanged"
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -71,12 +73,12 @@
                             <ColumnDefinition Width="auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Pelle Norin" />
-                            <TextBlock Text="pelle.norin@gmail.com" />
+                            <TextBlock Text="{Binding FullName}" FontWeight="Bold" FontSize="15"/>
+                            <TextBlock Text="{Binding Email}" FontWeight="Regular" />
                         </StackPanel>
 
                         <Button
-                            x:Name="btn_Remove"
+                            
                             Click="btn_Remove_Click"
                             Background="Transparent"
                             BorderThickness="0"
@@ -85,7 +87,9 @@
                             Grid.Column="1" 
                             FontFamily="Segoe MDL2 Assets"  
                             Content="&#xE74D;"
+                            FontSize="18"
                             />
+                        <!-- x:Name="btn_Remove" -->
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
