@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,18 +24,24 @@ namespace Wpf_AddressBook
     public partial class MainWindow : Window
     {
         private ObservableCollection<Contact> contacts;
+        //private Guid _currentId;
         public MainWindow()
         {
             InitializeComponent();
             contacts = new ObservableCollection<Contact>();
             lv_Contacts.ItemsSource = contacts;
+
+            //Kanske:
+            tb_FirstName.Focus();
         }
 
         private void btn_Add_Click(object sender, RoutedEventArgs e)
         {
-            Contact contact = contacts.FirstOrDefault(x => x.Email == tb_Email.Text);  // kanske ta bort?
+            // kanske göra if-sats som kollar tomt fält här
 
-            if(contact == null)
+            Contact contactExists = contacts.FirstOrDefault(x => x.Email == tb_Email.Text);  
+
+            if(contactExists == null && tb_Email.Text != "")
             {
 
                 contacts.Add(new Contact 
@@ -52,36 +59,105 @@ namespace Wpf_AddressBook
             {
                 MessageBox.Show("Det finns redan en kontakt med denna e-postadress");
             }
-            
 
-            tb_FirstName.Text = ""; // kanske en egen metod
+            
+            ClearForm();
+
+            //Kanske:
+            tb_FirstName.Focus();
+        }
+        private void ClearForm()
+        {
+            tb_FirstName.Text = "";
             tb_LastName.Text = "";
             tb_Email.Text = "";
             tb_Street.Text = "";
             tb_PostalCode.Text = "";
             tb_City.Text = "";
-
         }
         private void btn_Remove_Click(object sender, RoutedEventArgs e)
         {
-            var button = sender as Button;
-            Contact contact = (Contact)button!.DataContext;
-
-            contacts.Remove(contact);
             
+
+            try
+            {
+            Button button = sender as Button;
+            Contact contact = (Contact)button!.DataContext;
+            contacts.Remove(contact);
+            ClearForm();
+            }
+            catch { }
+            /*
+
+            if(contact.Id == _currentId)
+            {
+                ClearForm();
+                lv_Contacts.SelectedItems.Clear();
+            }  */
+
+            
+            //lv_Contacts.SelectedItems.Clear();
+
+            
+            // ta bort kotakten från visningen först
         }
 
         private void lv_Contacts_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Contact contact = (Contact)lv_Contacts.SelectedItem;
-            tb_FirstName.Text = contact.FirstName;
-            tb_LastName.Text = contact.LastName;
-            tb_Email.Text = contact.Email;
-            tb_Street.Text = contact.Street;
-            tb_PostalCode.Text = contact.PostalCode;
-            tb_City.Text = contact.City;
+            //UIElement parent = Parent as UIElement; //loopa över alla textboxar och sätt readonly på dem - GetEnumerator?
 
-            //var contact = (ContactPerson)lv_Contacts.SelectedItems[0]!;
+            //_currentId = contact.Id;
+
+            //  var items = obj!.Items;       items.SourceCollection; <-en lista (som går att loopa igenom
+
+            try
+            {
+                var obj = sender as ListView;
+                var item = (Contact)obj!.SelectedItem;
+
+                if (item != null)
+                { 
+                    tb_FirstName.Text = item.FirstName;
+                    tb_LastName.Text = item.LastName;
+                    tb_Email.Text = item.Email;
+                    tb_Street.Text = item.Street;
+                    tb_PostalCode.Text = item.PostalCode;
+                    tb_City.Text = item.City;
+                }
+
+            }
+            catch { }
+
+            
+
+            btn_Add.Visibility = Visibility.Hidden;
+            btn_Edit.Visibility = Visibility.Visible;
+
+
+            //tb_FirstName.IsReadOnly = true; // Funkar!
+
+        }
+        
+        private void btn_Edit_Click(object sender, RoutedEventArgs e)
+        {
+            //contacts.FirstOrDefault(x => x.Id == _currentId).FirstName = tb_FirstName.Text;
+
+            
+
+            ClearForm();
+
+            btn_Edit.Visibility = Visibility.Hidden;
+            btn_Add.Visibility = Visibility.Visible;
+
+            //lv_Contacts_SelectionChanged(sender, e);
+            //lv_Contacts.SelectedItems.Clear();
+            //ClearForm();
         }
     }
 }
+
+
+
+// det behövs en knapp för att rensa så man kan lägga till ny contact när en annan är i focus
+// samma funktion kanske kan användas för att rensa innan man raderar kontakt
+// https://learn.microsoft.com/en-us/dotnet/desktop/wpf/events/routed-events-overview?view=netdesktop-6.0

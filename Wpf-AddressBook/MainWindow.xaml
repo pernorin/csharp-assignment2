@@ -18,9 +18,13 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Margin="12">
+            <StackPanel Grid.Row="0" Margin="12" x:Name="sp_Form" >  <!--  kanske ta bort Name  --> <!-- DataContext -->
                 <TextBlock Text="Förnamn" Style="{StaticResource label}" />
-                <TextBox x:Name="tb_FirstName" Style="{StaticResource field}" />
+                <TextBox x:Name="tb_FirstName" Style="{StaticResource field}" >
+                    <TextBox.BindingGroup>
+                        <BindingGroup/>
+                    </TextBox.BindingGroup>
+                </TextBox>
                 <TextBlock Text="Efternamn" Style="{StaticResource label}" />
                 <TextBox x:Name="tb_LastName" Style="{StaticResource field}" />
                 <TextBlock Text="Epost" Style="{StaticResource label}" />
@@ -57,6 +61,17 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 />
+            <Button 
+                Grid.Row="1"
+                x:Name="btn_Edit"
+                Click="btn_Edit_Click"
+                Content="Redigera"
+                Margin="12"
+                Padding="24 6"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Visibility="Hidden"
+                /> <!-- gör style för dessa till en static resource -->
         </Grid>
         <ListView
             Grid.Column="1"
