@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,7 +25,7 @@ namespace Wpf_AddressBook
     public partial class MainWindow : Window
     {
         private ObservableCollection<Contact> contacts;
-        //private Guid _currentId;
+        private Guid _currentId;
         public MainWindow()
         {
             InitializeComponent();
@@ -106,7 +107,7 @@ namespace Wpf_AddressBook
         {
             //UIElement parent = Parent as UIElement; //loopa över alla textboxar och sätt readonly på dem - GetEnumerator?
 
-            //_currentId = contact.Id;
+            
 
             //  var items = obj!.Items;       items.SourceCollection; <-en lista (som går att loopa igenom
 
@@ -123,6 +124,7 @@ namespace Wpf_AddressBook
                     tb_Street.Text = item.Street;
                     tb_PostalCode.Text = item.PostalCode;
                     tb_City.Text = item.City;
+                    _currentId = item.Id;
                 }
 
             }
@@ -140,9 +142,21 @@ namespace Wpf_AddressBook
         
         private void btn_Edit_Click(object sender, RoutedEventArgs e)
         {
-            //contacts.FirstOrDefault(x => x.Id == _currentId).FirstName = tb_FirstName.Text;
+           // contacts.FirstOrDefault(x => x.Id == _currentId).FirstName = tb_FirstName.Text;
 
-            
+            Contact selectedContact = contacts.Where(c => c.Id == _currentId).FirstOrDefault();
+
+            //MessageBox.Show($"{selectedContact.FirstName}");
+
+            selectedContact.FirstName = tb_FirstName.Text;
+            selectedContact.LastName = tb_LastName.Text;
+            selectedContact.Email = tb_Email.Text;
+            selectedContact.Street = tb_Street.Text;
+            selectedContact.PostalCode = tb_PostalCode.Text;
+            selectedContact.City = tb_City.Text;
+
+            lv_Contacts.UnselectAll();
+            lv_Contacts.Items.Refresh();
 
             ClearForm();
 
