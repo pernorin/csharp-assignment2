@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Wpf_AddressBook.Models;
+using Wpf_AddressBook.Services;
 
 namespace Wpf_AddressBook
 {
@@ -24,49 +25,124 @@ namespace Wpf_AddressBook
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ObservableCollection<Contact> contacts;
-        private Guid _currentId;
+        private ObservableCollection<Contact> _contacts;
+        private IFileService _fileService;
+        private Guid _currentId;        
+
         public MainWindow()
         {
-            InitializeComponent();
-            contacts = new ObservableCollection<Contact>();
-            lv_Contacts.ItemsSource = contacts;
+            InitializeComponent();            
+            _contacts = new ObservableCollection<Contact>();
 
-            //Kanske:
+            _fileService = new FileService();
+            try
+            {
+                _contacts = _fileService.Read();
+            }
+            catch { }
+            
+            lv_Contacts.ItemsSource = _contacts;
+            
             tb_FirstName.Focus();
+        }
+
+        private void lv_Contacts_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //UIElement parent = Parent as UIElement; //loopa över alla textboxar och sätt readonly på dem - GetEnumerator?
+            //  var items = obj!.Items;       items.SourceCollection; <-en lista (som går att loopa igenom
+
+            try
+            {
+                var obj = sender as ListView;
+                var item = (Contact)obj!.SelectedItem;
+
+                if (item != null)
+                {
+                    tb_FirstName.Text = item.FirstName;
+                    tb_LastName.Text = item.LastName;
+                    tb_Email.Text = item.Email;
+                    tb_Street.Text = item.Street;
+                    tb_PostalCode.Text = item.PostalCode;
+                    tb_City.Text = item.City;
+                    _currentId = item.Id;
+                }
+            }
+            catch { }
+
+            btn_Add.Visibility = Visibility.Hidden;
+            btn_Edit.Visibility = Visibility.Visible;
+
+            //tb_FirstName.IsReadOnly = true; // Funkar!
         }
 
         private void btn_Add_Click(object sender, RoutedEventArgs e)
         {
-            // kanske göra if-sats som kollar tomt fält här
-
-            Contact contactExists = contacts.FirstOrDefault(x => x.Email == tb_Email.Text);  
-
-            if(contactExists == null && tb_Email.Text != "")
+            if(tb_FirstName.Text != "" || tb_Email.Text != "")
             {
+                Contact contactExists = _contacts.FirstOrDefault(x => x.Email == tb_Email.Text);
 
-                contacts.Add(new Contact 
-                { 
-                    FirstName = tb_FirstName.Text,
-                    LastName = tb_LastName.Text,
-                    Email = tb_Email.Text,
-                    Street = tb_Street.Text,
-                    PostalCode = tb_PostalCode.Text,
-                    City = tb_City.Text
-                });
-
+                if (contactExists == null)
+                {
+                    _contacts.Add(new Contact 
+                    { 
+                        FirstName = tb_FirstName.Text,
+                        LastName = tb_LastName.Text,
+                        Email = tb_Email.Text,
+                        Street = tb_Street.Text,
+                        PostalCode = tb_PostalCode.Text,
+                        City = tb_City.Text
+                    });
+                    _fileService.Save(_contacts);
+                }
+                else
+                {
+                    MessageBox.Show("Det finns redan en kontakt med denna e-postadress");
+                }
             }
             else
             {
-                MessageBox.Show("Det finns redan en kontakt med denna e-postadress");
+                MessageBox.Show("Förnamn och e-postadress måste anges");
             }
 
-            
-            ClearForm();
-
-            //Kanske:
+            ClearForm();            
             tb_FirstName.Focus();
         }
+
+        private void btn_Remove_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+            Button button = sender as Button;
+            Contact contact = (Contact)button!.DataContext;
+            _contacts.Remove(contact);
+            _fileService.Save(_contacts);
+            ClearForm();
+            }
+            catch { }            
+        }
+        
+        private void btn_Edit_Click(object sender, RoutedEventArgs e)
+        {
+            Contact selectedContact = _contacts.Where(c => c.Id == _currentId).FirstOrDefault();            
+
+            selectedContact.FirstName = tb_FirstName.Text;
+            selectedContact.LastName = tb_LastName.Text;
+            selectedContact.Email = tb_Email.Text;
+            selectedContact.Street = tb_Street.Text;
+            selectedContact.PostalCode = tb_PostalCode.Text;
+            selectedContact.City = tb_City.Text;
+
+            _fileService.Save(_contacts);
+
+            lv_Contacts.UnselectAll();
+            lv_Contacts.Items.Refresh();
+
+            ClearForm();
+
+            btn_Edit.Visibility = Visibility.Hidden;
+            btn_Add.Visibility = Visibility.Visible;
+        }
+
         private void ClearForm()
         {
             tb_FirstName.Text = "";
@@ -76,102 +152,15 @@ namespace Wpf_AddressBook
             tb_PostalCode.Text = "";
             tb_City.Text = "";
         }
-        private void btn_Remove_Click(object sender, RoutedEventArgs e)
-        {
-            
-
-            try
-            {
-            Button button = sender as Button;
-            Contact contact = (Contact)button!.DataContext;
-            contacts.Remove(contact);
-            ClearForm();
-            }
-            catch { }
-            /*
-
-            if(contact.Id == _currentId)
-            {
-                ClearForm();
-                lv_Contacts.SelectedItems.Clear();
-            }  */
-
-            
-            //lv_Contacts.SelectedItems.Clear();
-
-            
-            // ta bort kotakten från visningen först
-        }
-
-        private void lv_Contacts_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //UIElement parent = Parent as UIElement; //loopa över alla textboxar och sätt readonly på dem - GetEnumerator?
-
-            
-
-            //  var items = obj!.Items;       items.SourceCollection; <-en lista (som går att loopa igenom
-
-            try
-            {
-                var obj = sender as ListView;
-                var item = (Contact)obj!.SelectedItem;
-
-                if (item != null)
-                { 
-                    tb_FirstName.Text = item.FirstName;
-                    tb_LastName.Text = item.LastName;
-                    tb_Email.Text = item.Email;
-                    tb_Street.Text = item.Street;
-                    tb_PostalCode.Text = item.PostalCode;
-                    tb_City.Text = item.City;
-                    _currentId = item.Id;
-                }
-
-            }
-            catch { }
-
-            
-
-            btn_Add.Visibility = Visibility.Hidden;
-            btn_Edit.Visibility = Visibility.Visible;
-
-
-            //tb_FirstName.IsReadOnly = true; // Funkar!
-
-        }
-        
-        private void btn_Edit_Click(object sender, RoutedEventArgs e)
-        {
-           // contacts.FirstOrDefault(x => x.Id == _currentId).FirstName = tb_FirstName.Text;
-
-            Contact selectedContact = contacts.Where(c => c.Id == _currentId).FirstOrDefault();
-
-            //MessageBox.Show($"{selectedContact.FirstName}");
-
-            selectedContact.FirstName = tb_FirstName.Text;
-            selectedContact.LastName = tb_LastName.Text;
-            selectedContact.Email = tb_Email.Text;
-            selectedContact.Street = tb_Street.Text;
-            selectedContact.PostalCode = tb_PostalCode.Text;
-            selectedContact.City = tb_City.Text;
-
-            lv_Contacts.UnselectAll();
-            lv_Contacts.Items.Refresh();
-
-            ClearForm();
-
-            btn_Edit.Visibility = Visibility.Hidden;
-            btn_Add.Visibility = Visibility.Visible;
-
-            //lv_Contacts_SelectionChanged(sender, e);
-            //lv_Contacts.SelectedItems.Clear();
-            //ClearForm();
-        }
     }
 }
 
+/*
+ -Lägg filepath någon annanstans.
+ -Gör async.
+ -Fixa style (lek 10: repetition)
+ */
 
 
-// det behövs en knapp för att rensa så man kan lägga till ny contact när en annan är i focus
-// samma funktion kanske kan användas för att rensa innan man raderar kontakt
+
 // https://learn.microsoft.com/en-us/dotnet/desktop/wpf/events/routed-events-overview?view=netdesktop-6.0

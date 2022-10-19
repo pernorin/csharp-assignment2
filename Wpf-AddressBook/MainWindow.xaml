@@ -18,7 +18,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Margin="12" x:Name="sp_Form" >  <!--  kanske ta bort Name  --> <!-- DataContext -->
+            <StackPanel Grid.Row="0" Margin="12" >  <!--  kanske ta bort Name  x:Name="sp_Form" --> <!-- DataContext -->
                 <TextBlock Text="Förnamn" Style="{StaticResource label}" />
                 <TextBox x:Name="tb_FirstName" Style="{StaticResource field}" >
                     <TextBox.BindingGroup>
