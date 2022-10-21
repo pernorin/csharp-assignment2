@@ -10,7 +10,7 @@ using System.Xml;
 using Wpf_AddressBook.Models;
 
 namespace Wpf_AddressBook.Services
-{
+{   // Hela klassen fungerar som i uppgift 1 bortsett från att filepath ligger direkt i denna fil
     internal interface IFileService 
     {
         public ObservableCollection<Contact> Read();
@@ -19,11 +19,6 @@ namespace Wpf_AddressBook.Services
     internal class FileService : IFileService
     {
         private string _filePath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\wpf_contacts.json"; 
-
-        public FileService(/*string filePath*/) 
-        {
-            //_filePath = filePath;
-        }
 
         public ObservableCollection<Contact> Read() 
         {

@@ -27,7 +27,7 @@ namespace Wpf_AddressBook
         private IFileService _fileService;
         private Guid _currentId;        
 
-        public MainWindow()
+        public MainWindow() // Komponenten initialiseras, kontaktlistan läses in från filen och sätts som source till lv_Contacts. 
         {
             InitializeComponent();            
             _contacts = new ObservableCollection<Contact>();
@@ -41,12 +41,11 @@ namespace Wpf_AddressBook
             
             lv_Contacts.ItemsSource = _contacts;
             
-            tb_FirstName.Focus();
+            tb_FirstName.Focus(); //  Slutligen ställs markören i fältet förnamn.
         }
 
         private void lv_Contacts_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
+        {  // När en kontakt i listan markeras stoppas den in i formuläret och dess id i _currentId. Knappen "lägg till" byts ut mot "redigera".
             try
             {
                 var obj = sender as ListView;
@@ -71,13 +70,13 @@ namespace Wpf_AddressBook
 
         private void btn_Add_Click(object sender, RoutedEventArgs e)
         {
-            if(tb_FirstName.Text != "" || tb_Email.Text != "")
+            if(tb_FirstName.Text != "" || tb_Email.Text != "") // Om fälten "förnamn" och "epost" inte är tomma...
             {
                 Contact contactExists = _contacts.FirstOrDefault(x => x.Email == tb_Email.Text);
 
-                if (contactExists == null)
+                if (contactExists == null) // ...och epostadressen inte redan finns...
                 {
-                    _contacts.Add(new Contact 
+                    _contacts.Add(new Contact  // ...läggs kontakten till i listan...
                     { 
                         FirstName = tb_FirstName.Text,
                         LastName = tb_LastName.Text,
@@ -86,7 +85,7 @@ namespace Wpf_AddressBook
                         PostalCode = tb_PostalCode.Text,
                         City = tb_City.Text
                     });
-                    _fileService.Save(_contacts);
+                    _fileService.Save(_contacts); // ...och listan sparas.
                 }
                 else
                 {
@@ -99,13 +98,13 @@ namespace Wpf_AddressBook
             }
 
             ClearForm();            
-            tb_FirstName.Focus();
+            tb_FirstName.Focus(); // Formuläret rensas och markören ställs i fältet förnamn
         }
 
         private void btn_Remove_Click(object sender, RoutedEventArgs e)
         {
             try
-            {
+            {  // En kontakt tas bort från listan och listan sparas
             Button button = sender as Button;
             Contact contact = (Contact)button!.DataContext;
             _contacts.Remove(contact);
@@ -116,28 +115,28 @@ namespace Wpf_AddressBook
         }
         
         private void btn_Edit_Click(object sender, RoutedEventArgs e)
-        {
+        { // Den markerade kontakten hittas med _currentId 
             Contact selectedContact = _contacts.Where(c => c.Id == _currentId).FirstOrDefault();            
 
-            selectedContact.FirstName = tb_FirstName.Text;
+            selectedContact.FirstName = tb_FirstName.Text;  // Innehållet i kontakten ersätts med det som står i formuläret
             selectedContact.LastName = tb_LastName.Text;
             selectedContact.Email = tb_Email.Text;
             selectedContact.Street = tb_Street.Text;
             selectedContact.PostalCode = tb_PostalCode.Text;
             selectedContact.City = tb_City.Text;
 
-            _fileService.Save(_contacts);
+            _fileService.Save(_contacts); // Listan sparas
 
             lv_Contacts.UnselectAll();
-            lv_Contacts.Items.Refresh();
+            lv_Contacts.Items.Refresh(); // Listfönstret uppdateras
 
             ClearForm();
 
             btn_Edit.Visibility = Visibility.Hidden;
-            btn_Add.Visibility = Visibility.Visible;
+            btn_Add.Visibility = Visibility.Visible; // Redigeraknappen försvinner och lägg till-knappen visar sig
         }
 
-        private void ClearForm()
+        private void ClearForm() // Rensar formuläret
         {
             tb_FirstName.Text = "";
             tb_LastName.Text = "";

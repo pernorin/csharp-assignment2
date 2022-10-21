@@ -7,7 +7,7 @@
         
         
 
-        <ResourceDictionary>
+        <ResourceDictionary> <!-- De olika dictionarys som används till styling -->
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/ButtonsDictionary.xaml" />
                 <ResourceDictionary Source="Resources/TextDictionary.xaml" />

@@ -8,25 +8,21 @@
         Title="MainWindow" Height="450" Width="800"
         Style="{StaticResource MainWindow}"
         >
-    <Grid Margin="12">
+    <Grid Margin="12">  <!-- Denna Grid omfattar hela fönstret. Den Delas in i två kolumner. -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="0">
+        <Grid Grid.Column="0"> <!-- Denna Grid är delen med formulär och knapp -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Margin="12" >
+            <StackPanel Grid.Row="0" Margin="12" > <!-- Denna del utgör formuläret. Stylingen för elementen ligger i en static resource -->
                 <TextBlock Text="Förnamn" Style="{StaticResource label}" />
-                <TextBox x:Name="tb_FirstName" Style="{StaticResource field}" >
-                    <TextBox.BindingGroup>
-                        <BindingGroup/>
-                    </TextBox.BindingGroup>
-                </TextBox>
+                <TextBox x:Name="tb_FirstName" Style="{StaticResource field}" />
                 <TextBlock Text="Efternamn" Style="{StaticResource label}" />
                 <TextBox x:Name="tb_LastName" Style="{StaticResource field}" />
                 <TextBlock Text="Epost" Style="{StaticResource label}" />
@@ -53,6 +49,7 @@
                     </StackPanel>
                 </Grid>
             </StackPanel>
+            <!-- Här är knapparna för att lägga till eller redigera. Från början visas lägg till-knappen och redigeraknappen är dold. -->
             <Button 
                 Grid.Row="1"
                 x:Name="btn_Add"
@@ -75,7 +72,7 @@
             SelectionChanged="lv_Contacts_SelectionChanged"
             Style="{StaticResource ContactList}"
             >
-
+            <!-- Här visas kontakterna upp med full name och epost -->
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>                        
