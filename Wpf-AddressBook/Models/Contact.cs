@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Wpf_AddressBook.Models
 {
-    internal class Contact //: INotifyPropertyChanged
+    internal class Contact
     {
         public Guid Id { get; } = Guid.NewGuid();
         public string FirstName { get; set; } = null!;
@@ -16,10 +16,6 @@ namespace Wpf_AddressBook.Models
         public string Street { get; set; } = null!;
         public string PostalCode { get; set; } = null!;
         public string City { get; set; } = null!;
-        public string FullName => $"{FirstName} {LastName}";
-
-        //public event PropertyChangedEventHandler? PropertyChanged;
+        public string FullName => $"{FirstName} {LastName}";        
     }
 }
-// https://daedtech.com/wpf-and-notifying-property-change/
-// https://wellsb.com/csharp/learn/wpf-data-binding-csharp-inotifypropertychanged

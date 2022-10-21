@@ -4,15 +4,17 @@
              xmlns:local="clr-namespace:Wpf_AddressBook"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <Style x:Key="label" TargetType="TextBlock">
-            <Setter Property="Margin" Value="0 3" />
-        </Style>
+        
+        
 
-        <Style x:Key="field" TargetType="TextBox">
-            <Setter Property="Padding" Value="6" />
-            <Setter Property="Margin" Value="0 0 0 12" />
-            
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/ButtonsDictionary.xaml" />
+                <ResourceDictionary Source="Resources/TextDictionary.xaml" />
+                <ResourceDictionary Source="Resources/WindowDictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+        
 
     </Application.Resources>
 </Application>

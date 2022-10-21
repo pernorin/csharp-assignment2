@@ -20,9 +20,7 @@ using Wpf_AddressBook.Services;
 
 namespace Wpf_AddressBook
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+    
     public partial class MainWindow : Window
     {
         private ObservableCollection<Contact> _contacts;
@@ -48,8 +46,6 @@ namespace Wpf_AddressBook
 
         private void lv_Contacts_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //UIElement parent = Parent as UIElement; //loopa över alla textboxar och sätt readonly på dem - GetEnumerator?
-            //  var items = obj!.Items;       items.SourceCollection; <-en lista (som går att loopa igenom
 
             try
             {
@@ -70,9 +66,7 @@ namespace Wpf_AddressBook
             catch { }
 
             btn_Add.Visibility = Visibility.Hidden;
-            btn_Edit.Visibility = Visibility.Visible;
-
-            //tb_FirstName.IsReadOnly = true; // Funkar!
+            btn_Edit.Visibility = Visibility.Visible;            
         }
 
         private void btn_Add_Click(object sender, RoutedEventArgs e)
@@ -154,13 +148,3 @@ namespace Wpf_AddressBook
         }
     }
 }
-
-/*
- -Lägg filepath någon annanstans.
- -Gör async.
- -Fixa style (lek 10: repetition)
- */
-
-
-
-// https://learn.microsoft.com/en-us/dotnet/desktop/wpf/events/routed-events-overview?view=netdesktop-6.0
